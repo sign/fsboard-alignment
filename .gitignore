@@ -1,0 +1,17 @@
+.idea/
+.claude/
+*.egg-info
+build/
+dist/
+.env
+__pycache__/
+*.pyc
+uv.lock
+.venv
+.ruff_cache/
+.pytest_cache/
+# run products
+features/
+runs/
+output/
+weights/
