@@ -1,7 +1,7 @@
 import numpy as np
 
 from fsboard_alignment.ctc import distance, greedy, viterbi
-from fsboard_alignment.suspects import reason, repeat
+from fsboard_alignment.suspects import errors, missing, reason, repeat
 
 REF = "call for more details"
 
@@ -16,6 +16,16 @@ def test_repeats():
     assert kind("call for mofor more details") == "repeat:for mo"
     assert repeat(REF, REF) is None
     assert repeat(REF + "sss", REF) is None
+
+
+def test_missing_words_and_shared_errors():
+    assert missing("always cover all bases", "always cover all the bases") == ["the"]
+    assert missing("bad for the e nvironment", "bad for the environment") == []
+    readings = ["the contton is high", "the conttos is high", "the contton is high"]
+    assert set.intersection(*(errors(r, "the cotton is high") for r in readings)) == {("", 5, "n")}
+    assert not errors("ddinner", "dinner")
+    readings = ["the sumrises", "the sunris es", "the sun rises"]
+    assert not set.intersection(*(errors(r, "the sun rises") for r in readings))
 
 
 def test_viterbi_places_each_character_on_its_spike():

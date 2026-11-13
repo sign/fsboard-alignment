@@ -4,7 +4,7 @@ Aligns and filters [FSboard](https://www.kaggle.com/datasets/googleai/fsboard), 
 For each of its 150,754 clips, a full run gives:
 
 - `alignments.json`: when each character of the label is signed.
-- `suspects.json`: the clips whose label does not match the signing, to filter out.
+- `suspects.json`: the clips whose label may not match the signing, in three tiers, to filter out.
 
 **Both files are attached to the [latest release](https://github.com/sign/fsboard-alignment/releases/latest)** as
 `.json.gz`, so you can download them without running anything. Their format is described under [Output](#output).
@@ -20,7 +20,17 @@ The letters are drawn as the alignment says they are signed.
 
 ## Suspicious annotations
 
-2,950 clips (2%) are flagged, each with one or more reasons:
+16,237 clips (10.8%) are flagged in three tiers, worst first. Each has a `tier`, a `level` and its `reasons`:
+
+| Tier | Level | Clips | Rule |
+|---|---|---|---|
+| `clear` | 3 | 2,950 (2.0%) | part of the phrase is signed twice, or the model cannot read the label |
+| `likely` | 2 | 1,566 (1.0%) | `missing_word:<word>`: one of the three readings skips a whole label word |
+| `unlikely` | 1 | 11,721 (7.8%) | `same_error:<label>><read>`: all three readings, also the one trained on the label, make the same error |
+
+A slip in one reading (`sumrises` for `sun rises`) is not flagged; spaces and doubled letters are ignored.
+
+Reasons in the `clear` tier:
 
 | Reason | Clips | What happened |
 |---|---|---|
@@ -90,7 +100,7 @@ A run writes both files to `output/`; the release holds the same two files, gzip
 
 ```
 alignments.json  {md5: {file, text, subset, split, signer, duration, chars: [{c, start, end, p}]}}
-suspects.json    [{md5, file, text, subset, split, signer, reasons, reading, reading_local, reading_trained,
+suspects.json    [{md5, file, text, subset, split, signer, tier, level, reasons, reading, reading_local, reading_trained,
                    accuracy, accuracy_trained}]
 ```
 
