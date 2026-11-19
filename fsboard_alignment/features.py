@@ -18,8 +18,7 @@ import time
 import numpy as np
 import torch
 import torch.nn.functional as F  # noqa: N812
-from simple_video_utils.frames import read_frames_batched
-from simple_video_utils.metadata import video_metadata
+from simple_video_utils import Video, video_metadata
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
 
@@ -61,7 +60,7 @@ class Videos(Dataset):
         if not os.path.exists(path):  # a dead mount must stop the run, not look like unreadable videos
             raise FileNotFoundError(path)
         try:
-            return torch.from_numpy(read_frames_batched(path)), float(video_metadata(path).fps), self.md5s[i]
+            return torch.from_numpy(Video(path).read().frames), float(video_metadata(path).fps), self.md5s[i]
         except (RuntimeError, ValueError):
             print("unreadable:", path, flush=True)
             return None
