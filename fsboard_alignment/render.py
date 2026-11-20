@@ -24,7 +24,8 @@ def main(argv=None):
     label, width, images = "".join(c["c"] for c in clip["chars"]), SIZE[0] - 2 * MARGIN, []
     # the largest font, from 15 down to 10, at which the whole label fits on one line
     font = next(f for f in map(ImageFont.load_default, range(15, 9, -1)) if f.getlength(label) <= width or f.size == 10)
-    for k, frame in enumerate(Video(original(clip["file"])).read(fps=FPS, size=SIZE).frames):
+    # keep_last=False: a GIF shows every frame equally long, so only the even steps
+    for k, frame in enumerate(Video(original(clip["file"])).read(fps=FPS, size=SIZE, keep_last=False).frames):
         image = Image.fromarray(frame)
         draw = ImageDraw.Draw(image, "RGBA")
         shown = [c for c in clip["chars"] if c.get("start", float("inf")) <= k / FPS]
