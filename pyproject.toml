@@ -9,10 +9,9 @@ license = { text = "CC-BY-4.0" }
 readme = "README.md"
 requires-python = ">=3.12" # av 19 dropped 3.11
 dependencies = [
-    "av>=19",
     "numpy",
     "pillow>=10.1", # ImageFont.load_default(size)
-    "simple-video-utils>=0.10.1", # read_frames_batched(fps=, size=)
+    "simple-video-utils>=1.0.0", # Video.read(fps=, size=)
     "torch",
 ]
 

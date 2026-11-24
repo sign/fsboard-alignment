@@ -13,7 +13,7 @@ COPY fsboard_alignment fsboard_alignment
 RUN pip install --no-cache-dir -e .
 
 # Fail the build, not the run, if an install replaced the image's torch or broke video decoding
-RUN python -c "import torch, av, simple_video_utils, fsboard_alignment; print(torch.__version__, av.__version__)"
+RUN python -c "import importlib.metadata, torch, simple_video_utils, fsboard_alignment; print(torch.__version__, importlib.metadata.version('av'))"
 
 # Run from the mounted working directory: weights/ is read there,
 # and features/, runs/ and output/ are written there
